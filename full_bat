@@ -15,7 +15,7 @@ do
 	int=$(($per + 0))
 
 #Full battery response: send a toast and notification using Termux API
-	if [ $int -eq 100 ] && [ $stp -eq 0 ]; then
+	if [ $int -gt 99 ] && [ $stp -eq 0 ]; then
 
 		termux-toast Your battery is at 100%
 		termux-notification --content "Your battery is at 100%" --title "Full Battery ðŸ”‹"  --led-color 008000 --led-on 2000 --led-off 2000
