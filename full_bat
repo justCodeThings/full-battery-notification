@@ -1,0 +1,39 @@
+#!/bin/bash
+
+#Bash Script intended to be used with Termux and Termux API. 
+#Use script to send a notification and toast when phone battery reaches 100%
+con=0
+while [ $con -eq 0 ]
+do
+#Query battery status using Termux API
+	raw=$(termux-battery-status)
+	echo $raw > str.json
+#Parse response for battery percentage and charging status
+	per=$(jq '.percentage' str.json)
+	stat=$(jq '.status' str.json)
+#Convert percentage to integer
+	int=$(($per + 0))
+
+#Full battery response: send a toast and notification using Termux API
+	if [ $int -eq 100 ] && [ $stp -eq 0 ]; then
+
+		termux-toast Your battery is at 100%
+		termux-notification --content "Your battery is at 100%" --title "Full Battery ðŸ”‹"  --led-color 008000 --led-on 2000 --led-off 2000
+		stp=1
+	fi
+
+#Less than full charge response.
+	if [ $int -lt 100 ]; then
+		
+		stp=0
+		
+		if [ "$stat" != "charging" ]; then
+			sleep 1
+		fi
+
+		if [ "$stat" = "charging" ]; then
+			sleep 1
+
+		fi		
+	fi
+done
